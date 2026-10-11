@@ -1,0 +1,53 @@
+/* "Midnight & Amber" — refined palette. Same navy/gold identity, richer depth and a warm neutral base. */
+:root {
+  --night: #0a1226;
+  --navy: #14213d;
+  --navy-2: #1f3160;
+  --gold: #fca311;
+  --gold-hover: #ffb94a;
+  --gold-deep: #d98200;
+  --gold-soft: #fff3d9;
+  --page: #f7f5f0;
+  --tile: #efece4;
+  --line: #e4e0d5;
+  --ink: #0f1a33;
+  --muted: #5b6478;
+}
+
+/* Chrome */
+.announcement { background: linear-gradient(90deg, #fca311, #ffc552 50%, #fca311); }
+.site-header { background: linear-gradient(180deg, rgba(26,41,76,.95), rgba(14,24,48,.95)); border-bottom: 1px solid rgba(252,163,17,.18); }
+.footer { background: linear-gradient(180deg, #0c1529, #060b19); }
+
+/* Hero: amber glow + cool blue light on a deep navy gradient */
+.hero {
+  background:
+    radial-gradient(900px 480px at 78% 42%, rgba(252,163,17,.27), transparent 62%),
+    radial-gradient(720px 520px at 6% 0%, rgba(86,116,210,.24), transparent 60%),
+    linear-gradient(160deg, #1a2b52 0%, #0c1529 72%);
+}
+.plinth { box-shadow: 0 40px 80px rgba(3,8,24,.55), 0 0 0 1px rgba(252,163,17,.25); }
+
+/* Buttons */
+.btn-gold { background: linear-gradient(135deg, #ffc552, #fca311 60%, #ea9208); color: var(--night); }
+.btn-gold:hover:not(:disabled) { background: linear-gradient(135deg, #ffd47e, #ffb94a 60%, #f29c14); }
+.btn-dark { background: linear-gradient(180deg, var(--navy-2), var(--navy)); }
+.btn-dark:hover { background: var(--navy-2); }
+
+/* Surfaces and accents */
+.product-card:hover { box-shadow: 0 18px 44px rgba(20,33,61,.14); }
+.room { box-shadow: 0 12px 30px rgba(20,33,61,.07); }
+.trust-item svg { background: var(--gold-soft); color: var(--gold-deep); }
+.chips a { background: var(--gold-soft); }
+.how li::before { background: linear-gradient(135deg, var(--navy-2), var(--night)); }
+.side-list a[aria-current="true"], .pills a[aria-current="true"] { background: linear-gradient(135deg, var(--navy-2), var(--night)); }
+.thumb[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--gold-soft); }
+
+/* Product cards: taller image area, bigger images, action buttons never clipped */
+.product-image-wrap { aspect-ratio: 4 / 5; }
+.product-image { padding: 10px; }
+.card-actions { align-items: flex-start; gap: 8px; }
+.card-actions .chip { display: inline-block; max-width: calc(100% - 52px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.card-buttons { flex-direction: column; flex: none; gap: 6px; }
+.card-buttons .heart-button { width: 34px; height: 34px; }
+.qv-image img { padding: 14px; }
