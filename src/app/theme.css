@@ -43,11 +43,59 @@
 .side-list a[aria-current="true"], .pills a[aria-current="true"] { background: linear-gradient(135deg, var(--navy-2), var(--night)); }
 .thumb[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--gold-soft); }
 
-/* Product cards: taller image area, bigger images, action buttons never clipped */
-.product-image-wrap { aspect-ratio: 4 / 5; }
-.product-image { padding: 10px; }
-.card-actions { align-items: flex-start; gap: 8px; }
-.card-actions .chip { display: inline-block; max-width: calc(100% - 52px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.card-buttons { flex-direction: column; flex: none; gap: 6px; }
-.card-buttons .heart-button { width: 34px; height: 34px; }
-.qv-image img { padding: 14px; }
+/* ===== Product card ===== */
+.product-card { position: relative; border-radius: 18px; background: var(--white); }
+.product-card:hover { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(20,33,61,.14); border-color: #d9d3c3; }
+.product-image-wrap { background: radial-gradient(circle at 50% 42%, #fff 0%, var(--tile) 80%); }
+.product-image { padding: 22px; }
+
+/* sale flag (top-left) */
+.sale-flag { position: absolute; top: 12px; left: 12px; z-index: 2; padding: 4px 10px; border-radius: 999px; background: linear-gradient(135deg, #ffc552, #fca311); color: var(--night); font-size: 12px; font-weight: 800; letter-spacing: .02em; box-shadow: 0 4px 12px rgba(252,163,17,.35); }
+
+/* quick actions (top-right, stacked so they never collide with the flag) */
+.card-buttons { position: absolute; top: 10px; right: 10px; z-index: 2; display: flex; flex-direction: column; gap: 8px; }
+.card-buttons .heart-button { width: 36px; height: 36px; background: rgba(255,255,255,.92); backdrop-filter: blur(6px); border-color: rgba(20,33,61,.08); box-shadow: 0 2px 8px rgba(20,33,61,.1); transition: transform .15s, color .15s, border-color .15s; }
+.card-buttons .heart-button:hover { transform: scale(1.1); border-color: var(--navy); }
+
+/* body */
+.product-card-body { padding: 14px 16px 16px; gap: 6px; }
+.product-dept { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gold-deep); }
+.product-title { font-size: 16px; line-height: 1.3; min-height: 2.6em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-title:hover { text-decoration: none; color: var(--navy-2); }
+.product-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; margin: 2px 0 10px; }
+.product-price strong { font-family: var(--font-display); font-size: 21px; letter-spacing: -.01em; }
+.product-price .unit { font-size: 13px; }
+.product-price .was { margin: 0; font-size: 13px; }
+.product-card-body .btn { min-height: 42px; border-radius: 12px; }
+
+@media (max-width: 640px) {
+  .product-card { border-radius: 14px; }
+  .product-image { padding: 12px; }
+  .sale-flag { top: 8px; left: 8px; padding: 3px 8px; font-size: 11px; }
+  .card-buttons { top: 8px; right: 8px; gap: 6px; }
+  .card-buttons .heart-button { width: 32px; height: 32px; }
+  .card-buttons .heart-button svg { width: 15px; height: 15px; }
+  .product-card-body { padding: 10px 10px 12px; gap: 4px; }
+  .product-dept { font-size: 10px; }
+  .product-title { font-size: 14px; }
+  .product-price { margin-bottom: 8px; gap: 0 6px; }
+  .product-price strong { font-size: 17px; }
+  .product-price .unit, .product-price .was { font-size: 12px; }
+  .product-card-body .btn { min-height: 40px; padding: 0 8px; font-size: 13px; gap: 6px; }
+}
+@media (max-width: 360px) {
+  .product-card-body .btn svg { display: none; }
+}
+
+/* next/image fill needs a positioned parent: the <a> was static, so the image collapsed */
+.product-image-wrap > a { position: absolute; inset: 0; display: block; }
+
+/* Mobile header: push profile / wishlist / cart icons to the right edge.
+   `.desktop-nav + .header-actions { margin-left: 0 }` (still adjacent while hidden) was beating the mobile rule. */
+@media (max-width: 1000px) {
+  .header-actions,
+  .desktop-nav + .header-actions { margin-left: auto; margin-right: -8px; gap: 2px; }
+}
+
+/* image placeholder when a product photo can't load */
+.img-fallback { position: absolute; inset: 0; display: grid; place-items: center; color: var(--muted); opacity: .55; }
