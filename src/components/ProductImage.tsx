@@ -31,4 +31,3 @@ export function ProductImage({ src, sizes, priority = false, className }: Props)
       onError={() => setMode((m) => (m === "optimized" ? "original" : "failed"))}
     />
   );
-}
