@@ -1,59 +1,244 @@
-# BizOS Retail v2
+# BizOS Retail
 
-Next.js 15 (App Router) · TypeScript strict · Zustand · Zod · Vitest
+> Production-minded B2B/B2C retail storefront built with Next.js App Router, TypeScript, React 19 and Zustand.
 
-## Run
-```bash
-cp .env.example .env.local
-npm install
-npm run dev        # http://localhost:3000
-npm run qa         # typecheck + lint + tests + build
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?logo=next.js)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=111)](https://react.dev/)
+[![Tests](https://img.shields.io/badge/tests-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
+
+## Live Demo
+
+**Production:** https://bizos-retail-hf7v.vercel.app/
+
+**Repository:** https://github.com/real-aiman/bizos-retail
+
+---
+
+## What this project demonstrates
+
+BizOS Retail is a full-featured ecommerce frontend designed around a real ERP-backed product catalog rather than hard-coded demo data. It focuses on the engineering details that matter in production: server-side validation, safe pricing, responsive UX, persistent state, SEO, accessibility, analytics hooks, monitoring, testing and operational tooling.
+
+### Core features
+
+- Next.js 15 App Router with TypeScript strict mode
+- Server-rendered product catalog with URL-driven search, filters, sorting and pagination
+- ERP/BizOS API integration with development fallback data
+- Product detail pages with structured data and related products
+- Persistent cart and wishlist with hydration-safe Zustand stores
+- Cart drawer, toast feedback and sticky mobile purchase actions
+- Checkout with Zod validation and server-side order re-pricing
+- Promo codes with server-side validation, expiry and minimum-subtotal rules
+- Deals page with sale pricing and expiry countdowns
+- Product comparison for up to three products
+- Recently viewed products and share actions
+- Device-only address book and saved delivery details
+- Customer dashboard, order history, order details and invoice printing
+- Admin dashboard with catalog checks, product filters, CSV export and optional order listing
+- Security headers, private-route noindex rules and signed admin sessions
+- Optional Google Analytics, Mixpanel and Sentry integrations
+- Vitest + React Testing Library coverage for core business logic and UI behavior
+- Responsive design for desktop, tablet and mobile
+
+## Tech stack
+
+| Layer | Technology |
+| --- | --- |
+| Framework | Next.js 15, App Router |
+| Language | TypeScript, strict mode |
+| UI | React 19, CSS, Lucide React |
+| State | Zustand 5 |
+| Validation | Zod |
+| Testing | Vitest, React Testing Library, jsdom |
+| Data | BizOS ERP REST API + development fallback |
+| Monitoring | Sentry (optional) |
+| Analytics | Google Analytics / Mixpanel (optional) |
+| Deployment | Vercel / Node 20+ |
+
+## Architecture
+
+```text
+src/
+├── app/                    # App Router pages, layouts and API routes
+├── components/             # Reusable UI components
+├── config/                 # Store and business configuration
+├── lib/                    # Catalog, pricing, promos, analytics and utilities
+├── modules/
+│   ├── products/           # Product domain + ERP catalog service
+│   └── orders/             # Order domain + server gateway
+├── stores/                 # Zustand client state
+└── __tests__/              # Unit and component tests
 ```
 
-## Before going live (needs real business facts / backend)
-1. `BIZOS_API_URL`, `BIZOS_ORDERS_PATH`, `BIZOS_API_KEY`: orders are POSTed to the backend. Align the payload in
-   `src/modules/orders/services/orderGateway.ts` with the real order contract.
-2. Set `BIZOS_ALLOW_SIMULATED_ORDERS=false`. With no orders endpoint the store refuses to fake a confirmation.
-3. `NEXT_PUBLIC_CURRENCY` (e.g. `PKR`), `NEXT_PUBLIC_LOCALE` (e.g. `en-PK`), shipping values, support email/phone/WhatsApp.
-4. Fill `policies.delivery` / `policies.returns` in `src/config/store.ts` (hidden until set).
-5. Product feed currently has no description, images list, brand or stock. Add `description`, `images`, `brand`, `inStock`
-   to the API and the product page, JSON-LD and buy box use them automatically.
+The application follows an SSR-first approach. Server components handle catalog and business data wherever possible, while client components are kept around interactive state such as cart, wishlist, comparison and checkout controls.
 
-## New in this update
-- **Promo codes**: set `BIZOS_PROMO_CODES` (JSON, see `.env.example`). The cart only shows a code's terms; the server re-checks code, expiry and minimum when the order is placed, and rejects unknown codes. No codes configured means the box simply does nothing useful, so leave it empty to disable.
-- **Cart drawer + toasts**: cart icon opens a slide-over mini cart; add-to-cart and wishlist give instant feedback.
-- **Search**: header typeahead (`/api/search`) and a `/search` results page with department filter, sort and pagination.
-- **Categories** page with counts and starting prices.
-- **Saved delivery details** (opt-in checkbox, device-only) with a "Forget" button in `/account`.
+## Local development
 
-## Also new
-- **Deals** (`/deals`): lists products whose feed includes an optional `compareAtPrice` (shown struck-through with a % badge; the charged price is always `regularPrice`) and promo codes marked `"public": true`, with a live countdown to `expires`. The nav link appears only when there is something to show.
-- **Compare** up to 3 products side by side (`/compare?ids=`), lowest price highlighted.
-- **Recently viewed** on product pages, **Share** button, wishlist **Add all to cart**.
-- **Address book** (up to 5, device-only) with a picker at checkout; **Order again** (today's prices, discontinued items skipped) and **Print invoice**.
+### Requirements
 
-## Customer dashboard (`/dashboard`)
-Linked in the navbar, the header user icon and the footer; `/account` redirects here. Data comes from this device (there are no customer logins yet).
-- **Overview**: orders, total spent, items bought, promo savings, recent orders, recently viewed.
-- **Orders** (`/dashboard/orders`): search by order number, product, city or promo code; sort; order again.
-- **Order details** (`/dashboard/orders/[ref]`): items with images, subtotal/promo/delivery/total, delivery address and note, payment method, print invoice, order again, and WhatsApp/email/call links with the order number pre-filled. The progress strip only claims what is known (placed, store confirms by phone, pay on delivery); real shipping stages need a status feed from the backend.
-- **Addresses**: add/remove up to 5 saved addresses used at checkout.
+- Node.js 20+
+- npm 10+
+- A BizOS/ERP API for production data, or the included development fallback
 
-## Admin dashboard (`/admin`)
-Off by default. Set `ADMIN_PASSWORD` (12+ characters) to turn it on; without it every `/admin` URL returns 404. Optional `ADMIN_SESSION_SECRET` adds a signing secret.
-- **Overview**: KPIs, products by department, system checks (API, orders endpoint, simulated orders, promo JSON, site URL, analytics, Sentry) and catalog issues (zero price, no image, duplicate slug, bad was-price).
-- **Products**: search, department/stock/sale filters, sort, pagination, CSV export (formula-safe).
-- **Promo codes**: status of every configured code. Codes stay in the env var, so nothing can be edited from the browser.
-- **Orders**: lists orders only if `BIZOS_ORDERS_LIST_PATH` points at a GET endpoint (array, or `{data}` / `{orders}`). Field names are mapped tolerantly but the endpoint contract is yours to confirm.
-- Security: signed httpOnly, SameSite=Strict, 8-hour session cookie scoped to `/admin`; constant-time password check; login throttled to 5 tries per 15 min per server instance (best effort on serverless); every page, action and the CSV route re-check the session; `/admin` is `noindex` and disallowed in robots.txt.
+### Setup
 
-## What changed from v1
-- Server re-prices every order from the catalog; client totals are never trusted (`placeOrder` action).
-- Checkout is one validated page (Zod). Personal details no longer travel in the URL.
-- Orders are real objects: reference, stored per device, cart cleared, `purchase` analytics fired once.
-- Removed fabricated content: fake reviews, fake dashboard/orders/charts, placeholder phone/email, developer notes in customer copy.
-- Catalog: department pills with counts, price range, sort, multi-word search, all URL-driven and server-rendered.
-- Product page: quantity, sticky mobile buy bar, breadcrumbs, related products, Product + Breadcrumb JSON-LD, Open Graph.
-- Hydration-safe persisted stores (`skipHydration` + `StoreHydrator`), cross-tab sync, quantity cap.
-- Mixpanel loads only when a token is set. Security headers, real 404 status, noindex on private pages, redirects for old routes.
-- New design system (navy / gold / lit product plinths, Bricolage Grotesque + Instrument Sans).
+```bash
+git clone https://github.com/real-aiman/bizos-retail.git
+cd bizos-retail
+npm install
+cp .env.example .env.local
+npm run dev
+```
+
+Open `http://localhost:3000`.
+
+### Quality checks
+
+Run the complete local quality gate before pushing:
+
+```bash
+npm run qa
+```
+
+This runs:
+
+```text
+TypeScript typecheck → ESLint → Vitest → Next.js production build
+```
+
+Individual commands:
+
+```bash
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
+
+## Environment configuration
+
+The complete environment template is available in `.env.example`.
+
+### Required production values
+
+At minimum, configure:
+
+- `BIZOS_API_URL`
+- `BIZOS_PRODUCTS_PATH`
+- `BIZOS_ORDERS_PATH`
+- `BIZOS_TENANT_ID`
+- `BIZOS_API_KEY`
+- `NEXT_PUBLIC_SITE_URL`
+- `NEXT_PUBLIC_CURRENCY`
+- `NEXT_PUBLIC_LOCALE`
+
+For production, set:
+
+```env
+BIZOS_ALLOW_SIMULATED_ORDERS=false
+```
+
+Never commit `.env.local`, API keys, admin passwords, Sentry auth tokens or other secrets. The repository ignores local environment files by default.
+
+## Production safety notes
+
+- Order totals are recalculated on the server; client-provided totals are not trusted.
+- Promo codes are checked again when an order is placed.
+- Simulated orders are intended for local demos only and must be disabled in production.
+- Admin access is disabled unless an `ADMIN_PASSWORD` is configured.
+- Admin sessions use signed, httpOnly and SameSite cookies.
+- Private dashboard/admin pages are protected from indexing.
+- CSV exports are generated with formula-safe values.
+
+## Testing
+
+Tests live in `src/__tests__` and cover important business and UI paths including:
+
+- Cart state and quantity rules
+- Add-to-cart behavior
+- Catalog filtering and pricing
+- Promo validation
+- Order placement
+- Order statistics
+- Admin behavior
+- Dashboard behavior
+- Toast state
+
+Run tests with:
+
+```bash
+npm test
+```
+
+Watch mode:
+
+```bash
+npm run test:watch
+```
+
+## Deployment
+
+The project is suitable for Vercel or another Node.js hosting platform.
+
+For Vercel:
+
+1. Import the GitHub repository.
+2. Select the Next.js framework preset.
+3. Add the production environment variables from `.env.example`.
+4. Set `NEXT_PUBLIC_SITE_URL` to the deployed domain.
+5. Set `BIZOS_ALLOW_SIMULATED_ORDERS=false`.
+6. Deploy and verify the catalog, checkout and order API against the real ERP contract.
+
+## Important backend contract
+
+The frontend intentionally does not invent a successful order response. Before production launch, confirm the request/response contract in:
+
+```text
+src/modules/orders/services/orderGateway.ts
+```
+
+The product feed should provide, where available:
+
+```text
+id
+name
+slug
+regularPrice
+compareAtPrice
+description
+images
+brand
+inStock
+departmentName
+```
+
+## Project status
+
+**Status: Active portfolio project / production-ready architecture pending final ERP contract verification.**
+
+The remaining production dependency is business-specific: the real ERP order endpoint, payload contract and live product fields must be verified before accepting real customer orders.
+
+## Engineering highlights
+
+This repository intentionally demonstrates more than a visual ecommerce UI:
+
+- Domain-oriented modules for products and orders
+- Strict TypeScript and schema validation
+- SSR-first Next.js architecture
+- Safe server-side pricing and promo validation
+- Hydration-safe persisted client state
+- Automated tests and a single `npm run qa` quality gate
+- Security-minded admin and environment handling
+- SEO metadata and structured product data
+- Responsive, mobile-first interaction patterns
+- Optional observability integrations
+
+## Author
+
+**Aiman Shafiq** — Frontend Developer
+
+React · Next.js · TypeScript · WordPress
+
+Portfolio: https://real-aiman.github.io/real/
+
+GitHub: https://github.com/real-aiman
