@@ -239,6 +239,6 @@ This repository intentionally demonstrates more than a visual ecommerce UI:
 
 React · Next.js · TypeScript · WordPress
 
-Portfolio: https://real-aiman.github.io/real/
+Portfolio: https://portf-cyan-theta.vercel.app/
 
 GitHub: https://github.com/real-aiman
